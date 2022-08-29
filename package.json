@@ -1,0 +1,14 @@
+{
+  "name": "rust-webapp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "trunk serve --open"
+  },
+  "dependencies": {
+    "todomvc-app-css": "^2.4.2"
+  },
+  "author": "",
+  "license": "MIT"
+}
