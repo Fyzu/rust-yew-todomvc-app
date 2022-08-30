@@ -3,7 +3,9 @@ use std::sync::atomic::{AtomicUsize, Ordering};
 use crate::components::footer::Footer;
 use crate::components::header::Header;
 use crate::todos::Todo;
-use crate::{components::todo_list::TodoList, todos::Filter};
+use crate::{
+    components::complete_button::CompleteButton, components::todo_list::TodoList, todos::Filter,
+};
 use yew::{function_component, html, use_state, Callback};
 
 fn filter_todos(todos: &Vec<Todo>, filter: &Filter) -> Vec<Todo> {
@@ -83,7 +85,6 @@ pub fn application() -> Html {
             }
         })
     };
-
     let on_remove_todo = {
         let todos = todos.clone();
         Callback::from(move |id| {
@@ -95,6 +96,20 @@ pub fn application() -> Html {
             }
         })
     };
+    let on_complete_todos = {
+        let todos = todos.clone();
+        Callback::from(move |_| {
+            let values = (*todos)
+                .iter()
+                .map(|todo| {
+                    let mut new_todo = todo.clone();
+                    new_todo.is_completed = true;
+                    new_todo
+                })
+                .collect();
+            todos.set(values);
+        })
+    };
 
     let show_todos = filter_todos(&*todos, &*active_filter);
 
@@ -103,6 +118,9 @@ pub fn application() -> Html {
             <Header {on_add_todo} />
 
         <section class="main">
+            if todos_count > 0 {
+                <CompleteButton value={todos_count == completed_todos_count} on_click={on_complete_todos} />
+            }
             <TodoList todos={show_todos} {on_update_todo_text} {on_update_todo_is_completed} {on_remove_todo} />
             if todos_count > 0 {
                 <Footer {todos_count} {completed_todos_count} {on_select_filter} {on_clear_completed} active_filter={(*active_filter).clone()} />
