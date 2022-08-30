@@ -50,7 +50,14 @@ pub fn application() -> Html {
         Callback::from(move |new_filter| filter.set(new_filter))
     };
 
-    let on_clear_completed = Callback::from(|_| {});
+    let on_clear_completed = {
+        let todos = todos.clone();
+        Callback::from(move |_| {
+            let values = filter_todos(&*todos, &Filter::Active);
+
+            todos.set(values);
+        })
+    };
 
     let on_update_todo_is_completed = {
         let todos = todos.clone();

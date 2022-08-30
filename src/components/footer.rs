@@ -50,9 +50,11 @@ pub fn footer(props: &FooterProps) -> Html {
                     </FilterButton>
                 </li>
             </ul>
-            <button class="clear-completed" onclick={on_clear_completed}>
-                {"Clear completed"}
-            </button>
+            if props.completed_todos_count > 0 {
+                <button class="clear-completed" onclick={on_clear_completed}>
+                    {"Clear completed"}
+                </button>
+            }
         </footer>
     }
 }
