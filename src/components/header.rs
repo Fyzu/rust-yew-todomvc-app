@@ -15,7 +15,7 @@ pub fn header(props: &HeaderProps) -> Html {
         Callback::from(move |value: String| todo_text.set(value.clone()))
     };
 
-    let handle_add_todo = {
+    let on_add_todo = {
         let todo_text = todo_text.clone();
         let on_add_todo = props.on_add_todo.clone();
 
@@ -29,7 +29,7 @@ pub fn header(props: &HeaderProps) -> Html {
     html! {
         <header class="header">
             <h1>{"todos"}</h1>
-            <TextInput class="new-todo" value={(*todo_text).clone()} placeholder="What needs to be done?" on_input={handle_todo_text_change} on_change={handle_add_todo} />
+            <TextInput class="new-todo" value={(*todo_text).clone()} placeholder="What needs to be done?" on_input={handle_todo_text_change} on_save={on_add_todo} />
         </header>
     }
 }

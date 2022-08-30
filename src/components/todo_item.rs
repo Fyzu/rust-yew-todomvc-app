@@ -32,7 +32,7 @@ pub fn todo_item(props: &TodoItemProps) -> Html {
         Callback::from(move |value| editing_text.set(value))
     };
 
-    let on_change_text = {
+    let on_save_text = {
         let on_update_todo_text = props.on_update_todo_text.clone();
         let is_editing = is_editing.clone();
         let editing_text = editing_text.clone();
@@ -65,7 +65,7 @@ pub fn todo_item(props: &TodoItemProps) -> Html {
     let view = {
         html! {
             if *is_editing {
-                <TextInput class="edit" value={(*editing_text).clone()} placeholder="" on_input={on_input_text} on_change={on_change_text} />
+                <TextInput class="edit" value={(*editing_text).clone()} placeholder="" on_input={on_input_text} on_save={on_save_text} />
         } else {
                 <div className="view">
                     <input

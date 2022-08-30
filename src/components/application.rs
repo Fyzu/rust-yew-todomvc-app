@@ -34,10 +34,15 @@ pub fn application() -> Html {
     let on_add_todo = {
         let todos = todos.clone();
         Callback::from(move |text: String| {
+            let text = text.clone().trim().to_owned();
+            if text.is_empty() {
+                return;
+            }
+
             let mut values = (*todos).clone();
             values.push(Todo {
                 id: GLOBAL_ID.fetch_add(1, Ordering::Relaxed),
-                text: text.clone(),
+                text,
                 is_completed: false,
             });
             todos.set(values);
@@ -75,11 +80,17 @@ pub fn application() -> Html {
     };
     let on_update_todo_text = {
         let todos = todos.clone();
-        Callback::from(move |(id, text)| {
+        Callback::from(move |(id, text): (usize, String)| {
+            let text = text.clone().trim().to_owned();
+
             let mut values = (*todos).clone();
             if let Some((index, _)) = values.iter().enumerate().find(|(_, todo)| todo.id == id) {
-                let mut new_todo = &mut values[index];
-                new_todo.text = text;
+                if text.is_empty() {
+                    values.remove(index);
+                } else {
+                    let mut new_todo = &mut values[index];
+                    new_todo.text = text;
+                }
 
                 todos.set(values);
             }

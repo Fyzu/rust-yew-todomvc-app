@@ -1,5 +1,5 @@
 use wasm_bindgen::JsCast;
-use web_sys::{HtmlInputElement, InputEvent};
+use web_sys::{HtmlInputElement, InputEvent, KeyboardEvent};
 use yew::{function_component, html, Callback, Properties, Classes};
 
 #[derive(PartialEq, Properties)]
@@ -8,7 +8,7 @@ pub struct TextInputProps {
     pub class: Classes,
     pub value: String,
     pub on_input: Callback<String>,
-    pub on_change: Callback<()>,
+    pub on_save: Callback<()>,
     pub placeholder: String,
 }
 
@@ -26,13 +26,22 @@ pub fn textInput(props: &TextInputProps) -> Html {
         })
     };
 
-    let onchange = {
-        let on_change = props.on_change.clone();
+    let on_save = {
+        let on_save = props.on_save.clone();
 
-        Callback::from(move |_| on_change.emit(()))
+        Callback::from(move |_| on_save.emit(()))
+    };
+
+    let on_keydown = {
+        let on_save = props.on_save.clone();
+        Callback::from(move |event: KeyboardEvent| {
+            if event.which() == 13 {
+                on_save.emit(())
+            }
+        })
     };
 
     html! {
-        <input class={props.class.clone()} type="text" placeholder={props.placeholder.clone()} value={props.value.clone()} {oninput} {onchange} />
+        <input class={props.class.clone()} type="text" placeholder={props.placeholder.clone()} value={props.value.clone()} {oninput} onblur={on_save} onkeydown={on_keydown} />
     }
 }
