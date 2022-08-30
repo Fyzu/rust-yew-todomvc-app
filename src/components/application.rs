@@ -4,6 +4,22 @@ use crate::todos::Todo;
 use crate::{components::content::Content, todos::Filter};
 use yew::{function_component, html, use_state, Callback};
 
+fn filter_todos(todos: &Vec<Todo>, filter: &Filter) -> Vec<Todo> {
+    match filter {
+        Filter::All => todos.clone(),
+        Filter::Active => todos
+            .iter()
+            .filter(|todo| !todo.is_completed)
+            .cloned()
+            .collect(),
+        Filter::Completed => todos
+            .iter()
+            .filter(|todo| todo.is_completed)
+            .cloned()
+            .collect(),
+    }
+}
+
 #[function_component(Application)]
 pub fn application() -> Html {
     let active_filter = use_state(|| Filter::All);
@@ -31,21 +47,7 @@ pub fn application() -> Html {
 
     let on_clear_completed = Callback::from(|_| {});
 
-    let show_todos: Vec<Todo> = {
-        match *active_filter {
-            Filter::All => (*todos).clone(),
-            Filter::Active => (*todos)
-                .iter()
-                .filter(|todo| !todo.is_completed)
-                .cloned()
-                .collect(),
-            Filter::Completed => (*todos)
-                .iter()
-                .filter(|todo| todo.is_completed)
-                .cloned()
-                .collect(),
-        }
-    };
+    let show_todos = filter_todos(&*todos, &*active_filter);
 
     html! {
         <div class="todoapp">
