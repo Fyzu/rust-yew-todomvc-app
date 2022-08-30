@@ -52,6 +52,43 @@ pub fn application() -> Html {
 
     let on_clear_completed = Callback::from(|_| {});
 
+    let on_update_todo_is_completed = {
+        let todos = todos.clone();
+        Callback::from(move |(id, is_completed)| {
+            let mut values = (*todos).clone();
+            if let Some((index, _)) = values.iter().enumerate().find(|(_, todo)| todo.id == id) {
+                let mut new_todo = &mut values[index];
+                new_todo.is_completed = is_completed;
+
+                todos.set(values);
+            }
+        })
+    };
+    let on_update_todo_text = {
+        let todos = todos.clone();
+        Callback::from(move |(id, text)| {
+            let mut values = (*todos).clone();
+            if let Some((index, _)) = values.iter().enumerate().find(|(_, todo)| todo.id == id) {
+                let mut new_todo = &mut values[index];
+                new_todo.text = text;
+
+                todos.set(values);
+            }
+        })
+    };
+
+    let on_remove_todo = {
+        let todos = todos.clone();
+        Callback::from(move |id| {
+            let mut values = (*todos).clone();
+            if let Some((index, _)) = values.iter().enumerate().find(|(_, todo)| todo.id == id) {
+                values.remove(index);
+
+                todos.set(values);
+            }
+        })
+    };
+
     let show_todos = filter_todos(&*todos, &*active_filter);
 
     html! {
@@ -59,7 +96,7 @@ pub fn application() -> Html {
             <Header {on_add_todo} />
 
         <section class="main">
-            <TodoList todos={show_todos} />
+            <TodoList todos={show_todos} {on_update_todo_text} {on_update_todo_is_completed} {on_remove_todo} />
             if todos_count > 0 {
                 <Footer {todos_count} {completed_todos_count} {on_select_filter} {on_clear_completed} active_filter={(*active_filter).clone()} />
             }

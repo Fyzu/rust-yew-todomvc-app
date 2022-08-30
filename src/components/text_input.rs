@@ -1,9 +1,11 @@
 use wasm_bindgen::JsCast;
 use web_sys::{HtmlInputElement, InputEvent};
-use yew::{function_component, html, Callback, Properties};
+use yew::{function_component, html, Callback, Properties, Classes};
 
 #[derive(PartialEq, Properties)]
 pub struct TextInputProps {
+    #[prop_or_default]
+    pub class: Classes,
     pub value: String,
     pub on_input: Callback<String>,
     pub on_change: Callback<()>,
@@ -31,6 +33,6 @@ pub fn textInput(props: &TextInputProps) -> Html {
     };
 
     html! {
-        <input class="edit" type="text" placeholder={props.placeholder.clone()} value={props.value.clone()} {oninput} {onchange} />
+        <input class={props.class.clone()} type="text" placeholder={props.placeholder.clone()} value={props.value.clone()} {oninput} {onchange} />
     }
 }
