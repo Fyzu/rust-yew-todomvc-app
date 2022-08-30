@@ -1,5 +1,6 @@
 #[derive(PartialEq, Clone)]
 pub struct Todo {
+    pub id: usize,
     pub text: String,
     pub is_completed: bool,
 }

@@ -1,5 +1,6 @@
 pub mod application;
-pub mod content;
+pub mod todo_list;
+pub mod todo_item;
 pub mod header;
 pub mod footer;
 pub mod text_input;
