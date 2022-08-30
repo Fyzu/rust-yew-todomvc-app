@@ -36,6 +36,8 @@ jobs:
         with:
           # Optional version of trunk to install(eg. 'v0.8.1', 'latest')
           version: 'latest'
+      - name: Setup target
+        run: rustup target add wasm32-unknown-unknown
       - name: Setup Pages
         uses: actions/configure-pages@v2
       - name: Install dependencies
