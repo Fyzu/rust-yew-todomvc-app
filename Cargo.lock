@@ -240,8 +240,8 @@ dependencies = [
 ]
 
 [[package]]
-name = "rust-webapp"
-version = "0.1.0"
+name = "rust-yew-todomvc-app"
+version = "1.0.0"
 dependencies = [
  "log",
  "wasm-bindgen",
