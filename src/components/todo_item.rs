@@ -1,6 +1,8 @@
 use wasm_bindgen::JsCast;
-use web_sys::{HtmlInputElement, Event};
-use yew::{function_component, html, use_state, Callback, Properties};
+use web_sys::{Event, HtmlInputElement};
+use yew::{
+    function_component, html, use_effect_with_deps, use_node_ref, use_state, Callback, Properties,
+};
 
 use crate::components::text_input::TextInput;
 use crate::todos::Todo;
@@ -19,6 +21,8 @@ pub fn todo_item(props: &TodoItemProps) -> Html {
     let is_editing = use_state(|| false);
     let text = props.todo.text.clone();
     let editing_text = use_state(|| text.clone());
+
+    let input_ref = use_node_ref();
 
     let is_completed = props.todo.is_completed;
 
@@ -57,15 +61,41 @@ pub fn todo_item(props: &TodoItemProps) -> Html {
 
     let on_remove = {
         let on_remove_todo = props.on_remove_todo.clone();
-        Callback::from(move |_| {
-            on_remove_todo.emit(id)
-        })
+        Callback::from(move |_| on_remove_todo.emit(id))
     };
+
+    use_effect_with_deps(
+        {
+            let is_editing = (*is_editing).clone();
+            let input_ref = input_ref.clone();
+
+            move |_| {
+                if is_editing {
+                    if let Some(input) = input_ref.cast::<HtmlInputElement>() {
+                        if let Err(error) = input.focus() {
+                            log::error!("Error while focus TextInput: {:?}", error)
+                        }
+                    }
+                }
+
+                || ()
+            }
+        },
+        (*is_editing).clone(),
+    );
 
     let view = {
         html! {
             if *is_editing {
-                <TextInput class="edit" value={(*editing_text).clone()} placeholder="" on_input={on_input_text} on_save={on_save_text} />
+                <TextInput
+                    node_ref={input_ref}
+                    class="edit"
+                    value={(*editing_text).clone()}
+                    placeholder=""
+                    on_input={on_input_text}
+                    on_enter={&on_save_text}
+                    on_blur={&on_save_text}
+                />
         } else {
                 <div className="view">
                     <input
