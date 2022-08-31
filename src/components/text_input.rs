@@ -1,14 +1,18 @@
 use wasm_bindgen::JsCast;
 use web_sys::{HtmlInputElement, InputEvent, KeyboardEvent};
-use yew::{function_component, html, Callback, Properties, Classes};
+use yew::{function_component, html, Callback, Classes, Properties, NodeRef};
 
 #[derive(PartialEq, Properties)]
 pub struct TextInputProps {
     #[prop_or_default]
+    pub node_ref: NodeRef,
+    #[prop_or_default]
     pub class: Classes,
     pub value: String,
     pub on_input: Callback<String>,
-    pub on_save: Callback<()>,
+    #[prop_or_default]
+    pub on_blur: Callback<()>,
+    pub on_enter: Callback<()>,
     pub placeholder: String,
 }
 
@@ -26,22 +30,24 @@ pub fn textInput(props: &TextInputProps) -> Html {
         })
     };
 
-    let on_save = {
-        let on_save = props.on_save.clone();
-
-        Callback::from(move |_| on_save.emit(()))
-    };
-
     let on_keydown = {
-        let on_save = props.on_save.clone();
+        let on_enter = props.on_enter.clone();
         Callback::from(move |event: KeyboardEvent| {
             if event.which() == 13 {
-                on_save.emit(())
+                on_enter.emit(())
             }
         })
     };
 
     html! {
-        <input class={props.class.clone()} type="text" placeholder={props.placeholder.clone()} value={props.value.clone()} {oninput} onblur={on_save} onkeydown={on_keydown} />
+        <input
+            ref={props.node_ref.clone()}
+            class={props.class.clone()}
+            type="text" placeholder={props.placeholder.clone()}
+            value={props.value.clone()}
+            {oninput}
+            onblur={props.on_blur.reform(|_| ())}
+            onkeydown={on_keydown}
+        />
     }
 }

@@ -29,7 +29,13 @@ pub fn header(props: &HeaderProps) -> Html {
     html! {
         <header class="header">
             <h1>{"todos"}</h1>
-            <TextInput class="new-todo" value={(*todo_text).clone()} placeholder="What needs to be done?" on_input={handle_todo_text_change} on_save={on_add_todo} />
+            <TextInput 
+                class="new-todo"
+                value={(*todo_text).clone()}
+                placeholder="What needs to be done?"
+                on_input={handle_todo_text_change}
+                on_enter={on_add_todo}
+            />
         </header>
     }
 }
