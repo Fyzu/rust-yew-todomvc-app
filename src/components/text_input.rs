@@ -1,6 +1,6 @@
 use wasm_bindgen::JsCast;
 use web_sys::{HtmlInputElement, InputEvent, KeyboardEvent};
-use yew::{function_component, html, Callback, Classes, Properties, NodeRef};
+use yew::{function_component, html, Callback, Classes, NodeRef, Properties};
 
 #[derive(PartialEq, Properties)]
 pub struct TextInputProps {
